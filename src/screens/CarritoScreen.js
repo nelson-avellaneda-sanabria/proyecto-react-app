@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, SafeAreaView, FlatList, Image, Alert
+  View, Text, StyleSheet, TouchableOpacity, SafeAreaView, FlatList, Image
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -34,8 +34,9 @@ const CarritoScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    cargarCarrito();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', cargarCarrito);
+    return unsubscribe;
+  }, [navigation]);
 
   const eliminarProducto = async (id_producto) => {
     const id_usuario = await AsyncStorage.getItem('id_usuario');
@@ -58,8 +59,7 @@ const CarritoScreen = ({ navigation }) => {
   };
 
   const comprar = () => {
-    Alert.alert('¡Compra realizada!', 'Gracias por tu compra 🎉');
-    // Aquí podrías vaciar el carrito o redirigir
+    navigation.navigate('Pago'); // Redirige a la pantalla de pago
   };
 
   const renderItem = ({ item }) => (
