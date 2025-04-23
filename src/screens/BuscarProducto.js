@@ -9,7 +9,7 @@ const BuscarScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetch("http://192.168.137158/inventario_app/obtener_productos.php")
+    fetch("http://192.168.137.158/inventario_app/obtener_productos.php")
       .then(response => response.json())
       .then(data => {
         setProductos(data);
