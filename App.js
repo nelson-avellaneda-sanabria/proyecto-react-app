@@ -16,6 +16,9 @@ import NosotrosScreen from './src/screens/NosotrosScreen';
 import OpcionesScreen from './src/screens/OpcionesScreen';
 import DetalleProductoScreen from './src/screens/DetalleProductoScreen';
 import Buscarproducto from './src/screens/BuscarProducto';
+import PagoScreen from './src/screens/PagoScreen';
+import PagoNequiScreen from './src/screens/PagoNequiScreen';
+import PagoEnCasaScreen from './src/screens/PagoEnCasaScreen';
 
 const Stack = createStackNavigator();
 
@@ -36,10 +39,13 @@ const App = () => {
                 <Stack.Screen name="Opciones" component={OpcionesScreen} />
                 <Stack.Screen name="DetalleProducto" component={DetalleProductoScreen} />
                 <Stack.Screen name="Buscar" component={Buscarproducto} />
+                <Stack.Screen name="Pago" component={PagoScreen} />
+                <Stack.Screen name="PagoNequi" component={PagoNequiScreen} />
+                <Stack.Screen name="PagoEnCasa" component={PagoEnCasaScreen} />
+
             </Stack.Navigator>
         </NavigationContainer>
     );
 };
 
 export default App;
-

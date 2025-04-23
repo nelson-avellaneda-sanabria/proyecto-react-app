@@ -17,7 +17,7 @@ const DetalleProductoScreen = ({ route, navigation }) => {
       formData.append('id_usuario', id_usuario);
       formData.append('id_producto', producto.id); // Asegúrate de tener `id` en producto
 
-      const response = await fetch('http://10.0.2.2/inventario_app/agregar_carrito.php', {
+      const response = await fetch('http://192.168.137.158/inventario_app/agregar_carrito.php', {
         method: 'POST',
         body: formData
       });

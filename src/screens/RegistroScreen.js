@@ -14,7 +14,7 @@ const RegistroScreen = ({ navigation }) => {
             return;
         }
 
-        fetch('http://10.0.2.2/inventario_app/registro.php', {
+        fetch('http://192.168.137.158/inventario_app/registro.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, apellido, correo: email, telefono, password }),

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, SafeAreaView, ScrollView } from 'react-native';
 import axios from 'axios';
-
-const imagenFondo = require('../../assets/ROPA.jpg');
 
 const EditorInventarioScreen = ({ route, navigation }) => {
     const params = route?.params || {};
@@ -35,7 +33,7 @@ const EditorInventarioScreen = ({ route, navigation }) => {
             return;
         }
 
-        axios.post('http://10.0.2.2/inventario_app/guardar_producto.php', {
+        axios.post('http://192.168.137.158/inventario_app/guardar_producto.php', {
             id: idProducto,
             nombre,
             stock: parseInt(stock),
@@ -59,9 +57,8 @@ const EditorInventarioScreen = ({ route, navigation }) => {
     };
 
     return (
-        <ImageBackground source={imagenFondo} style={styles.fondo}>
-            <View style={styles.overlay} />
-            <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+            <ScrollView contentContainerStyle={styles.container}>
                 <Text style={styles.title}>Agregar / Editar Producto</Text>
 
                 <Text style={styles.label}>ID del Producto</Text>
@@ -94,66 +91,61 @@ const EditorInventarioScreen = ({ route, navigation }) => {
                 <TouchableOpacity style={styles.boton} onPress={guardarProducto}>
                     <Text style={styles.botonTexto}>Guardar Cambios</Text>
                 </TouchableOpacity>
-            </View>
-        </ImageBackground>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    fondo: {
+    safeArea: {
         flex: 1,
-        resizeMode: "cover",
-    },
-    overlay: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: '#FFF',
     },
     container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
         padding: 20,
+        alignItems: 'center',
     },
     title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#FFF",
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#333',
         marginBottom: 20,
-        textAlign: "center",
+        marginTop: 20,
+        textAlign: 'center',
     },
     label: {
         fontSize: 14,
-        fontWeight: "bold",
-        color: "#FFF",
+        fontWeight: 'bold',
+        color: '#333',
         alignSelf: "flex-start",
         marginBottom: 5,
     },
     input: {
-        width: "100%",
-        backgroundColor: "#FFF",
+        width: '100%',
+        backgroundColor: '#FFF',
         padding: 12,
         borderRadius: 5,
         fontSize: 16,
         marginBottom: 10,
         borderWidth: 1,
-        borderColor: "#CCC",
+        borderColor: '#CCC',
     },
     disabled: {
-        backgroundColor: "#d3d3d3",
+        backgroundColor: '#d3d3d3',
     },
     boton: {
-        backgroundColor: "#FF5733",
+        backgroundColor: '#FF5733',
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 8,
         marginTop: 10,
-        width: "100%",
-        alignItems: "center",
+        width: '100%',
+        alignItems: 'center',
     },
     botonTexto: {
-        color: "#FFF",
+        color: '#FFF',
         fontSize: 16,
-        fontWeight: "bold",
+        fontWeight: 'bold',
     },
 });
 

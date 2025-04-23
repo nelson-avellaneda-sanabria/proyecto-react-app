@@ -14,7 +14,7 @@ const PagoScreen = ({ navigation }) => {
       formData.append('id_usuario', id_usuario);
 
       try {
-        const response = await fetch('http://10.0.2.2/inventario_app/obtener_carrito.php', {
+        const response = await fetch('http://192.168.137.158/inventario_app/obtener_carrito.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: formData.toString(),

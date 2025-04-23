@@ -57,7 +57,7 @@ const PagoNequiScreen = ({ route, navigation }) => {
     formData.append('referencia', referencia);
 
     try {
-      const response = await fetch('http://10.0.2.2/inventario_app/registrar_pago.php', {
+      const response = await fetch('http://192.168.137.158/inventario_app/registrar_pago.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString(),

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, ImageBackground } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, Image } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
-const ITEMS_POR_PAGINA = 6;
+const ITEMS_POR_PAGINA = 4;
 
 const InventarioScreen = () => {
   const navigation = useNavigation();
@@ -12,7 +12,7 @@ const InventarioScreen = () => {
 
   const obtenerProductos = () => {
     setLoading(true);
-    fetch("http://10.0.2.2/inventario_app/obtener_productos.php")
+    fetch("http://192.168.137.158/inventario_app/obtener_productos.php")
       .then(response => response.json())
       .then(data => {
         setProductos(data);
@@ -40,7 +40,7 @@ const InventarioScreen = () => {
           text: "Eliminar",
           style: "destructive",
           onPress: () => {
-            fetch("http://10.0.2.2/inventario_app/eliminar_producto.php", {
+            fetch("http://192.168.137.158/inventario_app/eliminar_producto.php", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ id }),
@@ -70,89 +70,84 @@ const InventarioScreen = () => {
   }
 
   return (
-    <ImageBackground source={require("../../assets/ROPA.jpg")} style={styles.background}>
-      <View style={styles.overlay} />
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.searchButton} onPress={() => navigation.navigate("Buscador")}>
+        <Text style={styles.searchButtonText}>Buscar producto</Text>
+      </TouchableOpacity>
 
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.searchButton} onPress={() => navigation.navigate("Buscador")}>
-          <Text style={styles.searchButtonText}>Buscar producto</Text>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate("EditorInventario", {
+          id: '',
+          nombre: '',
+          stock: '',
+          precio: ''
+        })}
+      >
+        <Text style={styles.addButtonText}>Agregar producto</Text>
+      </TouchableOpacity>
+
+      <FlatList
+        data={productosPagina}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+        contentContainerStyle={styles.listContainer}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            {/* Imagen del producto */}
+            <Image
+              source={{ uri: item.imagen }}
+              style={styles.productImage}
+              resizeMode="cover"
+            />
+
+            <Text style={styles.productName}>{item.nombre}</Text>
+            <Text style={styles.productDetails}>Stock: {item.stock}</Text>
+            <Text style={styles.productDetails}>Precio: ${item.precio}</Text>
+            <Text style={styles.productDetails}>Fecha: {item.fecha}</Text>
+
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => navigation.navigate("EditorInventario", {
+                id: item.id,
+                nombre: item.nombre,
+                stock: item.stock,
+                precio: item.precio
+              })}
+            >
+              <Text style={styles.editButtonText}>Editar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => eliminarProducto(item.id)}
+            >
+              <Text style={styles.deleteButtonText}>Eliminar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+
+      <View style={styles.pagination}>
+        <TouchableOpacity disabled={paginaActual === 1} onPress={() => setPaginaActual(paginaActual - 1)}>
+          <Text style={[styles.paginationButton, paginaActual === 1 && styles.disabled]}>{'<'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate("EditorInventario", {
-            id: '',
-            nombre: '',
-            stock: '',
-            precio: ''
-          })}
-        >
-          <Text style={styles.addButtonText}>Agregar producto</Text>
+        <Text style={styles.paginationText}>{paginaActual} / {totalPaginas}</Text>
+
+        <TouchableOpacity disabled={paginaActual === totalPaginas} onPress={() => setPaginaActual(paginaActual + 1)}>
+          <Text style={[styles.paginationButton, paginaActual === totalPaginas && styles.disabled]}>{'>'}</Text>
         </TouchableOpacity>
-
-        <FlatList
-          data={productosPagina}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={2}
-          contentContainerStyle={styles.listContainer}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Text style={styles.productName}>{item.nombre}</Text>
-              <Text style={styles.productDetails}>Stock: {item.stock}</Text>
-              <Text style={styles.productDetails}>Precio: ${item.precio}</Text>
-              <Text style={styles.productDetails}>Fecha: {item.fecha}</Text>
-
-              <TouchableOpacity
-                style={styles.editButton}
-                onPress={() => navigation.navigate("EditorInventario", {
-                  id: item.id,
-                  nombre: item.nombre,
-                  stock: item.stock,
-                  precio: item.precio
-                })}
-              >
-                <Text style={styles.editButtonText}>Editar</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => eliminarProducto(item.id)}
-              >
-                <Text style={styles.deleteButtonText}>Eliminar</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-
-        <View style={styles.pagination}>
-          <TouchableOpacity disabled={paginaActual === 1} onPress={() => setPaginaActual(paginaActual - 1)}>
-            <Text style={[styles.paginationButton, paginaActual === 1 && styles.disabled]}>{'<'}</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.paginationText}>{paginaActual} / {totalPaginas}</Text>
-
-          <TouchableOpacity disabled={paginaActual === totalPaginas} onPress={() => setPaginaActual(paginaActual + 1)}>
-            <Text style={[styles.paginationButton, paginaActual === totalPaginas && styles.disabled]}>{'>'}</Text>
-          </TouchableOpacity>
-        </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
   container: {
     flex: 1,
-    paddingTop: 80,
+    backgroundColor: "#FFF",
+    paddingTop: 30,
     paddingHorizontal: 10,
   },
   searchButton: {
@@ -182,36 +177,49 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    backgroundColor: "#333",
+    backgroundColor: "#F3F3F3",
     padding: 10,
     borderRadius: 10,
     margin: 5,
+    borderColor: "#CCC",
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  productImage: {
+    width: "100%",
+    height: 100,
+    borderRadius: 5,
+    marginBottom: 10,
   },
   productName: {
-    color: "#FFF",
+    color: "#000",
     fontWeight: "bold",
     marginBottom: 5,
+    textAlign: "center",
   },
   productDetails: {
-    color: "#CCC",
+    color: "#555",
+    textAlign: "center",
   },
   editButton: {
-    backgroundColor: "red",
+    backgroundColor: "#C00000",
     padding: 8,
     borderRadius: 5,
     alignItems: "center",
     marginTop: 10,
+    width: "100%",
   },
   editButtonText: {
     color: "#FFF",
     fontWeight: "bold",
   },
   deleteButton: {
-    backgroundColor: "#444",
+    backgroundColor: "#C00000",
     padding: 8,
     borderRadius: 5,
     alignItems: "center",
     marginTop: 5,
+    width: "100%",
   },
   deleteButtonText: {
     color: "#FFF",
@@ -232,7 +240,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginHorizontal: 10,
-    color:"#FFF"
+    color: "#000",
   },
   disabled: {
     color: "#AAA",
